@@ -99,24 +99,6 @@ export class Column {
     }
   }
 
-  findCardById(cardId) {
-    return this.cards.find((card) => card.id === cardId);
-  }
-
-  findCardIndexById(cardId) {
-    return this.cards.findIndex((card) => card.id === cardId);
-  }
-
-  moveCardWithInColumn(cardId, newIndex) {
-    const currentIndex = this.findCardIndexById(cardId);
-    if (currentIndex === -1) return;
-
-    const [card] = this.cards.splice(currentIndex, 1);
-    this.cards.splice(newIndex, 0, card);
-
-    this.renderCards();
-  }
-
   bindEvents() {
     if (!this.addButton) return;
 
