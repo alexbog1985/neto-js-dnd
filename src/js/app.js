@@ -1,13 +1,23 @@
-import { Card } from "../components/Card/Card";
+import { Column } from "../components/Column/Column";
 
 const container = document.querySelector(".container");
 
-const testCard = new Card("Тестовая карточка 1");
-const testCard2 = new Card("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae eos, exercitationem fugit id ipsum minus necessitatibus quidem! Distinctio dolore iste optio vel veritatis voluptas. Itaque nemo odio quae quia sunt!");
-const testCard3 = new Card("Тестовая карточка 3");
+const columnsData = [
+  {
+    title: "To Do",
+    cards: [{ text: "Task 1" }, { text: "Task 2" }],
+  },
+  {
+    title: "In Progress",
+    cards: [{ text: "task 3" }],
+  },
+  {
+    title: "Done",
+    cards: [{ text: "task 4" }, { text: "task 5" }],
+  },
+];
 
-container.appendChild(testCard.render());
-container.appendChild(testCard2.render());
-container.appendChild(testCard3.render());
-
-
+columnsData.forEach((columnData) => {
+  const column = new Column(columnData.title, columnData.cards);
+  container.append(column.render());
+});
