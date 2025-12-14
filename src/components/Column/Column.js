@@ -29,7 +29,7 @@ export class Column {
 
     const cardCount = document.createElement("span");
     cardCount.className = "card-count";
-    cardCount.textContent = this.cards.length;
+    cardCount.textContent = this.cards.length.toString();
 
     header.append(titleElement, cardCount);
 
