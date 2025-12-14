@@ -26,10 +26,10 @@ export class Card {
     const deleteIcon = document.createElement("span");
     deleteIcon.className = "delete-icon";
     deleteIcon.textContent = "\u2715";
-    this.deleteButton.appendChild(deleteIcon);
+    this.deleteButton.append(deleteIcon);
 
-    this.element.appendChild(this.contentElement);
-    this.element.appendChild(this.deleteButton);
+    this.element.append(this.contentElement);
+    this.element.append(this.deleteButton);
 
     this.bindEvents();
 
@@ -37,15 +37,13 @@ export class Card {
   }
 
   bindEvents() {
-    this.deleteButton.addEventListener('click', (event) => {
+    this.deleteButton.addEventListener("click", (event) => {
       event.stopPropagation();
       this.destroy();
     });
   }
 
   destroy() {
-    if (this.element && this.element.parentNode) {
-      this.element.parentNode.removeChild(this.element);
-    }
+    this.element?.remove();
   }
 }
