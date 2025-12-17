@@ -2,7 +2,7 @@ import "./Card.css";
 
 export class Card {
   constructor(text = "") {
-    this.id = `card-${Date.now()}`;
+    this.id = `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     this.text = text;
     this.element = null;
     this.contentElement = null;
@@ -45,5 +45,8 @@ export class Card {
 
   destroy() {
     this.element?.remove();
+    if (typeof this.onDestroy === "function") {
+      this.onDestroy(this.id);
+    }
   }
 }

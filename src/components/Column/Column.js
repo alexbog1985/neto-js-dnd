@@ -88,14 +88,25 @@ export class Column {
     }
 
     this.updateCardCount();
+    this.dispatchChange();
+
     return newCard;
+  }
+
+  dispatchChange() {
+    console.log("Column changed, dispatching event...");
+    this.element.dispatchEvent(
+      new CustomEvent("columnchange", { bubbles: true })
+    );
   }
 
   removeCard(cardId) {
     const index = this.cards.findIndex((card) => card.id === cardId);
-    if (index >= 0) {
+    if (index !== -1) {
       this.cards.splice(index, 1);
       this.updateCardCount();
+      this.renderCards();
+      this.dispatchChange();
     }
   }
 
