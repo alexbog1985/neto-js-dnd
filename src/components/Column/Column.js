@@ -96,7 +96,7 @@ export class Column {
   dispatchChange() {
     console.log("Column changed, dispatching event...");
     this.element.dispatchEvent(
-      new CustomEvent("columnchange", { bubbles: true })
+      new CustomEvent("columnchange", {bubbles: true})
     );
   }
 
@@ -111,7 +111,6 @@ export class Column {
   }
 
   bindEvents() {
-    if (!this.addButton) return;
 
     this.addButton.addEventListener("click", () => {
       const text = prompt("Enter card text: ");

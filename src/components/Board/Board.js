@@ -7,13 +7,16 @@ export class Board {
     this.columns = [];
     this.element = null;
 
+    this.draggedEl = null;
+    this.ghostEl = null;
+
     this.save = this.save.bind(this);
 
     this.init();
     this.setupColumns();
     this.load();
     this.render();
-    this.eventListeners();
+    this.bindEvents();
   }
 
   init() {
@@ -22,8 +25,40 @@ export class Board {
     this.container.append(this.element);
   }
 
-  eventListeners() {
+  bindEvents() {
+    this.cardsContainer = this.container.querySelector(".cards-container");
+
     this.element.addEventListener("columnchange", this.save);
+    this.element.addEventListener("mousedown", this.startDnD);
+    this.element.addEventListener("mousemove", this.moveDnD);
+    this.element.addEventListener("mouseleave", this.leaveDnD);
+  }
+
+  startDnD(e) {
+    if (e.target.closest(".card-delete-btn")) return;
+    this.draggedEl = e.target.closest(".card");
+
+    if (!this.draggedEl) return;
+
+    this.ghostEl = this.draggedEl.cloneNode(true);
+    this.ghostEl.classList.add("dragged");
+    document.body.append(this.ghostEl);
+    this.ghostEl.style.left = `${e.pageX - this.ghostEl.offsetWidth / 2}px`;
+    this.ghostEl.style.top = `${e.pageY - this.ghostEl.offsetWeight / 2}px`;
+  }
+
+  moveDnD(e) {
+    e.preventDefault();
+    if (!this.draggedEl) return;
+
+    this.ghostEl.style.left = `${e.pageX - this.ghostEl.offsetWidth / 2}px`
+    this.ghostEl.style.top = `${e.pageY - this.ghostEl.offsetHeight / 2}px`
+  }
+
+  leaveDnD(e) {
+    if (!this.draggedEl) return;
+    this.ghostEl = null;
+    this.draggedEl = null;
   }
 
   setupColumns() {
@@ -54,7 +89,7 @@ export class Board {
         console.warn("invalid localStorage data", e);
       }
     }
-    this.columns = this.initialState.map(d => new Column(d.title, d.cards));
+    this.columns = this.initialState.map((d) => new Column(d.title, d.cards));
   }
 
   save() {

@@ -6,3 +6,10 @@
   min-height: 40vh;
   overflow-x: auto;
 }
+
+.card.dragged {
+  border: 1px solid lightgray;
+  position: absolute;
+  z-index: 999;
+  pointer-events: none;
+}
