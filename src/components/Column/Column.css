@@ -23,14 +23,6 @@
   color: #172b4d;
 }
 
-.card-count {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  padding: 2px 8px;
-  font-size: 12px;
-  color: #5e6c84;
-}
-
 .cards-container {
   flex-grow: 1;
   min-height: 10px;

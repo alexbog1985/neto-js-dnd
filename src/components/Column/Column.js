@@ -27,11 +27,7 @@ export class Column {
     titleElement.className = "column-title";
     titleElement.textContent = this.title;
 
-    const cardCount = document.createElement("span");
-    cardCount.className = "card-count";
-    cardCount.textContent = this.cards.length.toString();
-
-    header.append(titleElement, cardCount);
+    header.append(titleElement);
 
     this.cardsContainer = document.createElement("div");
     this.cardsContainer.className = "cards-container";
@@ -63,15 +59,6 @@ export class Column {
       };
       this.cardsContainer.append(card.render());
     });
-
-    this.updateCardCount();
-  }
-
-  updateCardCount() {
-    const cardCount = this.element.querySelector(".card-count");
-    if (cardCount) {
-      cardCount.textContent = this.cards.length;
-    }
   }
 
   addCard(text) {
@@ -87,7 +74,6 @@ export class Column {
       this.cardsContainer.append(newCard.render());
     }
 
-    this.updateCardCount();
     this.dispatchChange();
 
     return newCard;
@@ -96,7 +82,7 @@ export class Column {
   dispatchChange() {
     console.log("Column changed, dispatching event...");
     this.element.dispatchEvent(
-      new CustomEvent("columnchange", {bubbles: true})
+      new CustomEvent("columnchange", { bubbles: true }),
     );
   }
 
@@ -104,14 +90,12 @@ export class Column {
     const index = this.cards.findIndex((card) => card.id === cardId);
     if (index !== -1) {
       this.cards.splice(index, 1);
-      this.updateCardCount();
       this.renderCards();
       this.dispatchChange();
     }
   }
 
   bindEvents() {
-
     this.addButton.addEventListener("click", () => {
       const text = prompt("Enter card text: ");
 
