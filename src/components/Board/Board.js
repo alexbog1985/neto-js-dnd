@@ -9,6 +9,7 @@ export class Board {
 
     this.draggedEl = null;
     this.ghostEl = null;
+    this.insertionMarker = null;
 
     this.save = this.save.bind(this);
     this.startDnD = this.startDnD.bind(this);
@@ -93,6 +94,23 @@ export class Board {
     });
   }
 
+  findInsertionElement(cardsContainer, clientY) {
+    const cardElements = cardsContainer.querySelectorAll(".card");
+    let closest = null;
+    let closestOffset = -Infinity;
+
+    cardElements.forEach((card) => {
+      const box = card.getBoundingClientRect();
+      const offset = clientY - box.top - box.height / 2;
+      if (offset < 0 && offset > closestOffset) {
+        closest = card;
+        closestOffset = offset;
+      }
+    });
+
+    return closest;
+  }
+
   startDnD(e) {
     e.preventDefault();
     if (e.target.closest(".card-delete-btn")) return;
@@ -102,10 +120,24 @@ export class Board {
 
     this.ghostEl = this.draggedEl.cloneNode(true);
     this.ghostEl.classList.add("dragged");
-    document.body.append(this.ghostEl);
-    this.ghostEl.style.left = `${e.pageX - this.ghostEl.offsetWidth / 2}px`;
-    this.ghostEl.style.top = `${e.pageY - this.ghostEl.offsetHeight / 2}px`;
 
+    const rect = this.draggedEl.getBoundingClientRect();
+
+    this.offsetX = e.clientX - rect.left;
+    this.offsetY = e.clientY - rect.top;
+
+    this.ghostEl.style.width = `${rect.width}px`;
+    this.ghostEl.style.height = `${rect.height}px`;
+    document.body.append(this.ghostEl);
+
+    this.ghostEl.style.left = `${e.clientX - this.offsetX}px`;
+    this.ghostEl.style.top = `${e.clientY - this.offsetY}px`;
+
+    this.insertionMarker = document.createElement("div");
+    this.insertionMarker.className = "insertion-marker";
+    this.insertionMarker.style.height = `${rect.height}px`;
+
+    document.body.style.cursor = "grabbing";
     document.body.style.userSelect = "none";
 
     document.addEventListener("mousemove", this.moveDnD);
@@ -115,8 +147,24 @@ export class Board {
   moveDnD(e) {
     if (!this.draggedEl || !this.ghostEl) return;
 
-    this.ghostEl.style.left = `${e.pageX - this.ghostEl.offsetWidth / 2}px`;
-    this.ghostEl.style.top = `${e.pageY - this.ghostEl.offsetHeight / 2}px`;
+    this.ghostEl.style.left = `${e.clientX - this.offsetX}px`;
+    this.ghostEl.style.top = `${e.clientY - this.offsetY}px`;
+
+    this.insertionMarker.remove();
+
+    const targetColumn = document
+      .elementFromPoint(e.clientX, e.clientY)
+      ?.closest(".column");
+    if (!targetColumn) return;
+
+    const cardsContainer = targetColumn.querySelector(".cards-container");
+    const afterElement = this.findInsertionElement(cardsContainer, e.clientY);
+
+    if (afterElement) {
+      cardsContainer.insertBefore(this.insertionMarker, afterElement);
+    } else {
+      cardsContainer.append(this.insertionMarker);
+    }
   }
 
   endDnD(e) {
@@ -125,36 +173,34 @@ export class Board {
     this.ghostEl.remove();
     this.ghostEl = null;
 
+    if (this.insertionMarker) {
+      this.insertionMarker.remove();
+      this.insertionMarker = null;
+    }
+
     const targetColumn = e.target.closest(".column");
-    console.log("target column", targetColumn);
     if (targetColumn) {
       const cardsContainer = targetColumn.querySelector(".cards-container");
-      const cardElements = Array.from(cardsContainer.querySelectorAll(".card"));
-
-      const afterElement = cardElements.reduce((closest, card) => {
-        const box = card.getBoundingClientRect();
-        const offset = e.clientY - box.top - box.height / 2;
-        if (offset < 0 && offset > (closest ? closest.offset : -Infinity)) {
-          return { offset, element: card };
-        }
-        return closest;
-      }, null);
+      const afterElement = this.findInsertionElement(cardsContainer, e.clientY);
 
       if (afterElement) {
-        cardsContainer.insertBefore(this.draggedEl, afterElement.element);
+        cardsContainer.insertBefore(this.draggedEl, afterElement);
       } else {
         cardsContainer.append(this.draggedEl);
       }
 
       this.updateCardsData();
-
-      this.draggedEl.classList.remove("dragged");
-      this.draggedEl = null;
-
-      document.body.style.userSelect = "";
-
-      document.removeEventListener("mousemove", this.moveDnD);
-      document.removeEventListener("mouseup", this.endDnD);
     }
+
+    this.draggedEl.classList.remove("dragged");
+    this.draggedEl = null;
+    this.ghostEl = null;
+    this.insertionMarker = null;
+
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+
+    document.removeEventListener("mousemove", this.moveDnD);
+    document.removeEventListener("mouseup", this.endDnD);
   }
 }

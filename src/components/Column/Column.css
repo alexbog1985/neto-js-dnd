@@ -50,3 +50,75 @@
 .plus-icon {
   margin-right: 4px;
 }
+
+.add-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  margin: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-card-input {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #172b4d;
+  resize: vertical;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.add-card-input:focus {
+  border-color: #007acc;
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+}
+
+.add-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.add-card-submit {
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-card-submit:hover {
+  background-color: #005fa3;
+}
+
+.add-card-cancel {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #97a0af;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.add-card-cancel:hover {
+  background-color: #f0f0f0;
+  color: #5e6c84;
+}
