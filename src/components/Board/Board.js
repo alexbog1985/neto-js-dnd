@@ -112,6 +112,7 @@ export class Board {
   }
 
   startDnD(e) {
+    if (!e.target.closest(".card")) return;
     e.preventDefault();
     if (e.target.closest(".card-delete-btn")) return;
     this.draggedEl = e.target.closest(".card");
@@ -178,7 +179,8 @@ export class Board {
       this.insertionMarker = null;
     }
 
-    const targetColumn = e.target.closest(".column");
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    const targetColumn = target?.closest(".column");
     if (targetColumn) {
       const cardsContainer = targetColumn.querySelector(".cards-container");
       const afterElement = this.findInsertionElement(cardsContainer, e.clientY);
